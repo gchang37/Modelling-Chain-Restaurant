@@ -1,0 +1,20 @@
+DROP TABLE restaurant;
+DROP TABLE employee;
+DROP TABLE restaurant_table;
+DROP TABLE service_time;
+DROP TABLE guest;
+DROP TABLE reservation;
+DROP TABLE bill;
+
+DROP TABLE restaurant_employee;
+DROP TABLE position;
+DROP TABLE rTable_type;
+DROP TABLE serviceT_RTable;
+DROP TABLE rTable_guest;
+DROP TABLE status;
+DROP TABLE guest_reservation;
+DROP TABLE rTable_reservation;
+DROP TABLE guest_bill;
+DROP TABLE restaurant_rTable;
+DROP TABLE restaurant_bill;
+DROP TABLE restaurant_reservation;
