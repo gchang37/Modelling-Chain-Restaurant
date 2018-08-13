@@ -1,0 +1,165 @@
+CREATE TABLE restaurant(
+chain_num INT,
+start_date DATE,
+address VARCHAR(255),
+contact_num CHAR(12),
+PRIMARY KEY (chain_num)
+);
+
+CREATE TABLE employee(
+eid INT,
+sin CHAR(9),
+contact_num CHAR(12),
+fname VARCHAR(25),
+m_init VARCHAR(50),
+lname VARCHAR(75),
+seid INT,
+PRIMARY KEY(EID), 
+FOREIGN KEY(SEID) REFERENCES employee(EID)
+);
+
+CREATE TABLE restaurant_table(
+Table_ID INT,
+seat_num INT,
+EID INT,
+PRIMARY KEY(Table_ID),
+FOREIGN KEY(EID) REFERENCES employee(EID)
+);
+
+CREATE TABLE service_time(
+service_timeID INT,
+stDate DATE,
+start_time_hr INT,
+start_time_min INT,
+end_time_hr INT,
+end_time_min INT,
+in_use CHAR(1),
+PRIMARY KEY(service_timeID, stdate)
+);
+
+CREATE TABLE guest(
+gid INT,
+name VARCHAR(150),
+party_num INT,
+contact_num CHAR(12),
+PRIMARY KEY(GID) 
+);
+
+CREATE TABLE reservation(
+RID INT,
+rDate DATE,
+request_seats INT,
+start_time_hr INT,
+start_time_min INT,
+PRIMARY KEY(RID)
+);
+
+CREATE TABLE bill(
+transactionID INT,
+tDate DATE,
+amount NUMBER,
+tip NUMBER,
+eid INT, 
+gid INT,
+PRIMARY KEY(transactionID, tDate),
+FOREIGN KEY (EID) REFERENCES employee(EID) ON DELETE SET NULL,
+FOREIGN KEY (GID) REFERENCES guest(GID) ON DELETE CASCADE
+);
+
+CREATE TABLE restaurant_employee(
+EID INT,
+chain_num INT,
+PRIMARY KEY(EID, chain_num),
+FOREIGN KEY (EID) REFERENCES employee (EID) ON DELETE SET NULL,
+FOREIGN KEY (chain_num) REFERENCES restaurant (chain_num) ON DELETE CASCADE
+);
+
+CREATE TABLE position(
+EID INT,
+Position_type VARCHAR(25),
+PRIMARY KEY(EID, Position_type),
+FOREIGN KEY(EID) REFERENCES employee(EID) ON DELETE SET NULL
+);
+
+CREATE TABLE rTable_type(
+Table_ID INT,
+Table_type VARCHAR(50),
+PRIMARY KEY (Table_ID, Table_type), 
+FOREIGN KEY (Table_ID) REFERENCES restaurant_table(Table_ID) ON DELETE CASCADE
+);
+
+CREATE TABLE serviceT_RTable(
+TID INT,
+service_ID INT,
+sttDate DATE,
+PRIMARY KEY (TID, service_ID, sttDate),
+FOREIGN KEY (TID) REFERENCES restaurant_table(Table_ID) ON DELETE CASCADE,
+FOREIGN KEY (service_ID, sttDate) REFERENCES service_time(service_timeID, stDate) ON DELETE CASCADE
+);
+
+CREATE TABLE rTable_guest(
+TID INT,
+rGID INT,
+PRIMARY KEY (TID, rGID),
+FOREIGN KEY (TID) REFERENCES restaurant_table(Table_ID) ON DELETE CASCADE,
+FOREIGN KEY (rGID) REFERENCES guest(GID) ON DELETE CASCADE
+);
+
+CREATE TABLE status(
+RID INT,
+status VARCHAR(55),
+PRIMARY KEY(RID, status),
+FOREIGN KEY(RID) REFERENCES reservation (RID) ON DELETE CASCADE
+);
+
+CREATE TABLE guest_reservation(
+RID INT,
+GID INT,
+PRIMARY KEY (RID, GID),
+FOREIGN KEY (RID) REFERENCES reservation (RID) ON DELETE CASCADE,
+FOREIGN KEY (GID) REFERENCES guest(GID) ON DELETE CASCADE
+);
+
+CREATE TABLE rTable_reservation(
+TID INT,
+RID INT,
+PRIMARY KEY (TID, RID),
+FOREIGN KEY (TID) REFERENCES restaurant_table(Table_ID) ON DELETE CASCADE,
+FOREIGN KEY (RID) REFERENCES reservation (RID) ON DELETE CASCADE
+);
+
+CREATE TABLE guest_bill(
+gid INT,
+transactionID INT,
+tDate DATE,
+PRIMARY KEY (gid, transactionID, tDate),
+FOREIGN KEY (gid) REFERENCES guest(gid) ON DELETE CASCADE,
+FOREIGN KEY (transactionID, tDate) REFERENCES bill(transactionID, tDate ) ON DELETE CASCADE
+);
+
+
+CREATE TABLE restaurant_rTable(
+CN INT,
+TID INT,
+PRIMARY KEY(CN, TID),
+FOREIGN KEY (TID) REFERENCES restaurant_table(table_ID),
+FOREIGN KEY (CN) REFERENCES restaurant(chain_num)
+);
+
+CREATE TABLE restaurant_bill(
+CN INT,
+BID INT,
+rbDate DATE,
+PRIMARY KEY(CN, BID, rbDate),
+FOREIGN KEY (BID, rbDate) REFERENCES bill(transactionID, tDate),
+FOREIGN KEY (CN) REFERENCES restaurant(chain_num)
+);
+
+CREATE TABLE restaurant_reservation(
+CN INT,
+rrid INT,
+rrDate DATE,
+PRIMARY KEY(CN, rrID, rrDate),
+FOREIGN KEY (rrID, rrDate) REFERENCES reservation(RID, rDate),
+FOREIGN KEY (CN) REFERENCES restaurant(chain_num)
+);
