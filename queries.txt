@@ -1,0 +1,58 @@
+Retrieve the total number of cancellation and no-show reservation (i.e. sum the amount of ‘no-show’ and ‘cancelled’)
+
+SELECT COUNT(status)
+FROM status NATURAL JOIN reservation
+WHERE rDate = '01/01/2018' AND (status = 'no-show' OR  status = 'cancelled'); 
+
+Find all employees supervised by Pam Beesly (nested query)
+
+ SELECT *
+FROM employee 
+WHERE seid = (
+SELECT eid 
+FROM employee  
+WHERE fname = 'Pam' AND lname ='Beesly');
+
+Find all employees that work in both restaurants (Cartisan Product)
+
+SELECT Fname, Lname
+FROM employee  NATURAL JOIN restaurant_employee
+WHERE chain_num = 0 OR chain_num = 1
+group by Fname, Lname;
+
+Calculate the total earned on Jan 01, 2018 from restaurant chain number = 0
+
+SELECT SUM(tip + amount)
+FROM bill NATURAL JOIN restaurant_bill
+WHERE tDate = '01-01-2018' AND CN = 0;
+
+Calculate the average amount spend by guests on Jan 01, 2018 from restaurant chain number = 0
+
+SELECT AVG(tip + amount)
+FROM bill NATURAL JOIN restaurant_bill
+WHERE tDate = '01-01-2018' AND CN = 0;
+
+Show the gross revenue of each day (create view).
+
+CREATE VIEW gross_revenue AS
+SELECT TDATE, SUM(tip + amount) AS gross_revenue
+FROM bill NATURAL JOIN restaurant_bill
+WHERE CN = 0
+GROUP BY TDATE;
+
+Find the day with highest gross revenue
+
+SELECT TDATE, gross_revenue AS max_earned
+FROM gross_revenue 
+WHERE gross_revenue = (
+SELECT MAX(gross_revenue)
+FROM gross_revenue);
+
+List all tables with 4 seats available from 7pm~9pm on 01/05/2018
+
+SELECT TABLE_ID, STDATE
+FROM restaurant_rtable LEFT JOIN restaurant_table ON restaurant_rtable.tid = restaurant_table.table_ID
+NATURAL JOIN serviceT_rtable
+LEFT JOIN service_time ON serviceT_rtable.service_id = service_timeID
+where cn=0 AND sttdate='01/01/2018' AND seat_num=4 AND in_use='F';
+
